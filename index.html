@@ -1,42 +1,72 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AliceWeb | Agenda tus actividades</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
+        /* ── VARIABLES & THEMES ── */
+        :root[data-theme="light"] {
             --bg: #FBF6EE;
             --surface: #FFFFFF;
+            --surface-subtle: #F4EDE0;
             --ink: #3A322A;
             --ink-soft: #756A5C;
+            --ink-muted: #A79C8B;
             --teal: #379485;
             --teal-dark: #2A7267;
             --teal-tint: #E4F3EF;
             --orange: #F2A154;
+            --orange-hover: #EE9738;
             --orange-tint: #FCEBD8;
+            --orange-text: #8C4D06;
             --border: #ECE2D0;
-            --success: #4CAF82;
+            --border-hover: #D7C8B0;
+            --success: #3E9B71;
             --success-tint: #E5F6ED;
-            --radius: 16px;
+            --shadow-sm: 0 4px 12px rgba(58, 50, 42, 0.04);
+            --shadow-lg: 0 20px 40px -15px rgba(58, 50, 42, 0.08);
+            --blob-teal: rgba(55, 148, 133, 0.12);
+            --blob-orange: rgba(242, 161, 84, 0.12);
         }
 
-        *,
-        *::before,
-        *::after {
+        :root[data-theme="dark"] {
+            --bg: #14110E;
+            --surface: #1E1A16;
+            --surface-subtle: #29241E;
+            --ink: #F7EFE4;
+            --ink-soft: #B8AC9D;
+            --ink-muted: #7D7366;
+            --teal: #4BB4A3;
+            --teal-dark: #7ED4C7;
+            --teal-tint: rgba(75, 180, 163, 0.14);
+            --orange: #E69543;
+            --orange-hover: #F2A154;
+            --orange-tint: rgba(230, 149, 67, 0.16);
+            --orange-text: #FCEBD8;
+            --border: #312A23;
+            --border-hover: #473E34;
+            --success: #4CAF82;
+            --success-tint: rgba(76, 175, 130, 0.14);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 20px 45px -10px rgba(0, 0, 0, 0.45);
+            --blob-teal: rgba(75, 180, 163, 0.08);
+            --blob-orange: rgba(230, 149, 67, 0.08);
+        }
+
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
         html {
-            font-size: 18px;
+            font-size: 16px;
         }
 
         body {
@@ -45,47 +75,53 @@
             font-family: 'Nunito', sans-serif;
             color: var(--ink);
             line-height: 1.5;
+            transition: background 0.25s ease, color 0.25s ease;
+            overflow-x: hidden;
         }
 
+        /* ── BACKGROUND ACCENTS ── */
         .blob {
             position: fixed;
             border-radius: 50%;
-            filter: blur(90px);
+            filter: blur(100px);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.6;
+            transition: background 0.3s ease;
         }
 
         .blob-1 {
-            width: 480px;
-            height: 480px;
-            background: radial-gradient(circle, rgba(55, 148, 133, 0.14) 0%, transparent 70%);
-            top: -140px;
-            right: -80px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--blob-teal) 0%, transparent 70%);
+            top: -150px;
+            right: -100px;
         }
 
         .blob-2 {
-            width: 420px;
-            height: 420px;
-            background: radial-gradient(circle, rgba(242, 161, 84, 0.14) 0%, transparent 70%);
+            width: 440px;
+            height: 440px;
+            background: radial-gradient(circle, var(--blob-orange) 0%, transparent 70%);
             bottom: -120px;
             left: -100px;
         }
 
+        /* ── LAYOUT ── */
         .page {
             position: relative;
             z-index: 1;
             min-height: 100vh;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 380px 1fr;
         }
 
         .left-panel {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 2rem;
+            gap: 2.5rem;
             padding: 3rem 2.5rem;
+            border-right: 1px solid var(--border);
+            backdrop-filter: blur(12px);
         }
 
         .logo-row {
@@ -95,14 +131,15 @@
         }
 
         .logo-icon {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
             background: var(--teal);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(55, 148, 133, 0.25);
         }
 
         .logo-status {
@@ -111,29 +148,31 @@
         }
 
         .logo-status strong {
-            color: var(--teal-dark);
+            color: var(--teal);
             font-weight: 700;
         }
 
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--orange-tint);
-            color: #9A5B14;
+            color: var(--orange-text);
             font-weight: 700;
-            font-size: 0.85rem;
-            padding: 6px 14px;
-            border-radius: 100px;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 999px;
             margin-bottom: 1.25rem;
+            border: 1px solid rgba(242, 161, 84, 0.2);
         }
 
         .alice-name {
             font-family: 'Baloo 2', sans-serif;
-            font-size: 3.4rem;
-            font-weight: 700;
+            font-size: 3rem;
+            font-weight: 800;
             line-height: 1.05;
             color: var(--ink);
+            letter-spacing: -0.5px;
         }
 
         .alice-name .web {
@@ -141,73 +180,75 @@
         }
 
         .alice-sub {
-            margin-top: 0.9rem;
-            font-size: 1.05rem;
+            margin-top: 0.75rem;
+            font-size: 0.98rem;
             color: var(--ink-soft);
-            max-width: 26ch;
+            max-width: 28ch;
+            font-weight: 500;
         }
 
-        .steps-card {
+        /* ── CARDS (SIDEBAR) ── */
+        .side-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
+            border-radius: 18px;
+            padding: 1.35rem 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        .steps-title {
+        .side-card-title {
             font-family: 'Baloo 2', sans-serif;
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.9rem;
+            color: var(--ink);
         }
 
         .step-item {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
-            padding: 0.6rem 0;
-            font-size: 0.95rem;
+            gap: 12px;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
             color: var(--ink-soft);
+            line-height: 1.4;
         }
 
         .step-num {
             flex-shrink: 0;
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: var(--teal-tint);
-            color: var(--teal-dark);
-            font-weight: 700;
-            font-size: 0.85rem;
+            color: var(--teal);
+            font-weight: 800;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .status-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.25rem 1.5rem;
+            margin-top: 1px;
         }
 
         .status-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 0.4rem 0;
-            font-size: 0.9rem;
+            padding: 0.35rem 0;
+            font-size: 0.88rem;
             color: var(--ink-soft);
+            font-weight: 600;
         }
 
         .status-dot {
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--success);
+            box-shadow: 0 0 6px var(--success);
             flex-shrink: 0;
         }
 
+        /* ── RIGHT PANEL ── */
         .right-panel {
             display: flex;
             flex-direction: column;
@@ -220,8 +261,9 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            padding: 1.75rem 3rem;
+            padding: 2rem 3.5rem;
             flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
         }
 
         .form-header-left {
@@ -231,61 +273,87 @@
         }
 
         .header-avatar {
-            width: 46px;
-            height: 46px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: var(--teal);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Baloo 2', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: #fff;
+            box-shadow: 0 4px 10px rgba(55, 148, 133, 0.2);
         }
 
         .header-name {
             font-family: 'Baloo 2', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
         }
 
         .header-status {
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             color: var(--success);
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .header-tags {
+        .header-actions {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
 
         .tag {
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 6px 14px;
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 100px;
+            border-radius: 999px;
             color: var(--ink-soft);
         }
 
+        /* ── THEME TOGGLE BUTTON ── */
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 14px;
+            color: var(--ink);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--teal);
+            background: var(--surface-subtle);
+        }
+
+        /* ── FORM CARD ── */
         .form-area {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem 3rem 3rem;
+            padding: 2.5rem 3.5rem;
         }
 
         .form-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 2.25rem;
-            max-width: 760px;
+            padding: 2.5rem;
+            max-width: 720px;
             margin: 0 auto;
-            box-shadow: 0 20px 45px rgba(58, 50, 42, 0.06);
+            box-shadow: var(--shadow-lg);
         }
 
         .form-grid {
@@ -301,58 +369,67 @@
         .field-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .field-label {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--ink);
+            letter-spacing: 0.2px;
         }
 
         .field-input {
             background: var(--bg);
-            border: 2px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 12px;
-            padding: 0.85rem 1rem;
+            padding: 0.75rem 1rem;
             color: var(--ink);
             font-family: 'Nunito', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             width: 100%;
-            transition: border-color 0.15s ease, background 0.15s ease;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
             outline: none;
         }
 
         .field-input::placeholder {
-            color: #A79C8B;
+            color: var(--ink-muted);
             font-weight: 500;
+        }
+
+        .field-input:hover {
+            border-color: var(--border-hover);
         }
 
         .field-input:focus {
             border-color: var(--teal);
+            box-shadow: 0 0 0 3px var(--teal-tint);
             background: var(--surface);
         }
 
         .field-input option {
-            font-weight: 600;
+            background: var(--surface);
+            color: var(--ink);
         }
 
+        /* ── DAYS PICKER ── */
         .days-picker {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            margin-top: 2px;
         }
 
         .day-btn {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
-            border: 2px solid var(--border);
+            border: 1.5px solid var(--border);
             background: var(--bg);
             color: var(--ink-soft);
             font-family: 'Nunito', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.15s ease;
@@ -364,20 +441,23 @@
 
         .day-btn:hover {
             border-color: var(--teal);
-            color: var(--teal-dark);
+            color: var(--teal);
         }
 
         .day-btn.selected {
             background: var(--teal);
             border-color: var(--teal);
-            color: #fff;
+            color: #FFFFFF;
+            box-shadow: 0 4px 10px rgba(55, 148, 133, 0.3);
         }
 
         .days-hint {
-            font-size: 0.85rem;
-            color: var(--ink-soft);
+            font-size: 0.78rem;
+            color: var(--ink-muted);
+            margin-top: 4px;
         }
 
+        /* ── CONDITIONAL LOGIC ── */
         .conditional-section {
             display: none;
             grid-column: 1 / -1;
@@ -402,33 +482,37 @@
         }
 
         .section-divider-label {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--teal-dark);
-            white-space: nowrap;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
         }
 
+        /* ── SUBMIT BUTTON ── */
         .submit-area {
             grid-column: 1 / -1;
-            margin-top: 0.75rem;
+            margin-top: 1rem;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 1.05rem;
+            padding: 1rem;
             background: var(--orange);
             border: none;
             border-radius: 14px;
-            color: #4A2C05;
+            color: #382003;
             font-family: 'Baloo 2', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.12s ease, background 0.15s ease;
+            transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+            box-shadow: 0 6px 16px rgba(242, 161, 84, 0.25);
         }
 
         .btn-submit:hover {
-            background: #EE9738;
+            background: var(--orange-hover);
+            box-shadow: 0 8px 20px rgba(242, 161, 84, 0.35);
         }
 
         .btn-submit:active {
@@ -438,14 +522,16 @@
         .btn-submit:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
+        /* ── SUCCESS OVERLAY ── */
         .success-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(58, 50, 42, 0.35);
-            backdrop-filter: blur(6px);
+            background: rgba(20, 17, 14, 0.6);
+            backdrop-filter: blur(8px);
             z-index: 100;
             align-items: center;
             justify-content: center;
@@ -458,6 +544,7 @@
 
         .success-box {
             background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 24px;
             padding: 3rem 2.5rem;
             max-width: 420px;
@@ -466,31 +553,34 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.25rem;
+            gap: 1rem;
+            box-shadow: var(--shadow-lg);
         }
 
         .success-icon {
-            width: 64px;
-            height: 64px;
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
             background: var(--success-tint);
             color: var(--success);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
+            font-weight: bold;
         }
 
         .success-title {
             font-family: 'Baloo 2', sans-serif;
-            font-size: 1.7rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--ink);
         }
 
         .success-sub {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--ink-soft);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .success-items {
@@ -498,53 +588,39 @@
             gap: 0.6rem;
             flex-wrap: wrap;
             justify-content: center;
+            margin-top: 0.25rem;
         }
 
         .success-item {
-            padding: 8px 16px;
+            padding: 6px 14px;
             background: var(--success-tint);
-            border-radius: 100px;
-            font-size: 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--success);
         }
 
         .btn-reset {
-            margin-top: 0.5rem;
-            padding: 0.85rem 2rem;
+            margin-top: 0.75rem;
+            padding: 0.75rem 1.8rem;
             background: var(--teal-tint);
             border: none;
             border-radius: 12px;
-            color: var(--teal-dark);
+            color: var(--teal);
             font-family: 'Nunito', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.15s ease;
         }
 
         .btn-reset:hover {
-            background: #D6EEE8;
+            background: var(--teal);
+            color: #FFFFFF;
         }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        @media (max-width: 900px) {
-            html {
-                font-size: 17px;
-            }
-
+        /* ── RESPONSIVE ── */
+        @media (max-width: 960px) {
             .page {
                 grid-template-columns: 1fr;
             }
@@ -552,10 +628,12 @@
             .left-panel {
                 padding: 2rem 1.5rem;
                 gap: 1.5rem;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
             }
 
             .alice-name {
-                font-size: 2.6rem;
+                font-size: 2.5rem;
             }
 
             .form-header,
@@ -565,7 +643,7 @@
             }
 
             .form-card {
-                padding: 1.5rem;
+                padding: 1.75rem;
             }
 
             .form-grid {
@@ -573,7 +651,6 @@
             }
         }
     </style>
-
 </head>
 
 <body>
@@ -606,24 +683,24 @@
                     <div class="logo-status">Sistema <strong>activo</strong> · Lima, PE</div>
                 </div>
 
-                <div style="margin-top: 2rem;">
+                <div style="margin-top: 1.8rem;">
                     <div class="hero-badge">✨ Agendador inteligente</div>
                     <div class="alice-name">Alice<span class="web">Web</span></div>
-                    <p class="alice-sub">Agenda tus actividades y recibe recordatorios por Calendar y Gmail.</p>
+                    <p class="alice-sub">Agenda tus actividades y recibe recordatorios automáticos.</p>
                 </div>
             </div>
 
-            <div class="steps-card">
-                <div class="steps-title">Cómo funciona</div>
+            <div class="side-card">
+                <div class="side-card-title">Cómo funciona</div>
                 <div class="step-item"><span class="step-num">1</span> Completa el formulario con tu actividad</div>
-                <div class="step-item"><span class="step-num">2</span> AliceWeb revisa horarios y disponibilidad</div>
+                <div class="step-item"><span class="step-num">2</span> AliceWeb organiza tus horarios</div>
                 <div class="step-item"><span class="step-num">3</span> Creamos el evento en Google Calendar</div>
-                <div class="step-item"><span class="step-num">4</span> Recibes la confirmación por Gmail</div>
+                <div class="step-item"><span class="step-num">4</span> Confirmación directa a tu cuenta</div>
             </div>
 
-            <div class="status-card">
+            <div class="side-card">
                 <div class="status-row"><div class="status-dot"></div> Google Calendar conectado</div>
-                <div class="status-row"><div class="status-dot"></div> Gmail operativo</div>
+                <div class="status-row"><div class="status-dot"></div> Vercel Serverless activo</div>
             </div>
         </aside>
 
@@ -637,8 +714,11 @@
                         <div class="header-status">Lista para agendar</div>
                     </div>
                 </div>
-                <div class="header-tags">
-                    <div class="tag">Futura DevOps</div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">
+                        <span id="themeIcon">🌙</span>
+                        <span id="themeText">Modo Oscuro</span>
+                    </button>
                     <div class="tag">Claudia Reyna</div>
                 </div>
             </div>
@@ -679,6 +759,7 @@
                                     placeholder="Ej: Auditorio Principal, Oficina 301, Clínica San Felipe...">
                             </div>
 
+                            <!-- SECCIÓN: ESTUDIOS -->
                             <div class="conditional-section" id="section-estudios">
                                 <div class="section-divider full-width">
                                     <div class="section-divider-line"></div>
@@ -741,6 +822,7 @@
                                 </div>
                             </div>
 
+                            <!-- SECCIÓN: TRABAJO -->
                             <div class="conditional-section" id="section-trabajo">
                                 <div class="section-divider full-width">
                                     <div class="section-divider-line"></div>
@@ -773,6 +855,7 @@
                                 </div>
                             </div>
 
+                            <!-- SECCIÓN: EVENTO -->
                             <div class="conditional-section" id="section-evento">
                                 <div class="section-divider full-width">
                                     <div class="section-divider-line"></div>
@@ -793,6 +876,7 @@
                                 </div>
                             </div>
 
+                            <!-- SECCIÓN: SALUD -->
                             <div class="conditional-section" id="section-salud">
                                 <div class="section-divider full-width">
                                     <div class="section-divider-line"></div>
@@ -813,14 +897,14 @@
                                 </div>
                             </div>
 
+                            <!-- SECCIÓN: RECORDATORIO -->
                             <div class="field-group full-width">
                                 <div class="section-divider full-width">
                                     <div class="section-divider-line"></div>
                                     <div class="section-divider-label">Recordatorio</div>
                                     <div class="section-divider-line"></div>
                                 </div>
-                                <label class="field-label" for="reminderTime">¿Con cuánto tiempo antes quieres el
-                                    recordatorio?</label>
+                                <label class="field-label" for="reminderTime">Anticipación del aviso</label>
                                 <select class="field-input" id="reminderTime" required>
                                     <option value="0">Al momento del evento ⏰</option>
                                     <option value="5">5 minutos antes ⏱️</option>
@@ -833,7 +917,7 @@
 
                             <div class="submit-area">
                                 <button class="btn-submit" type="submit" id="btnSubmit">
-                                    Guardar y enviar alerta
+                                    Guardar y agendar actividad
                                 </button>
                             </div>
 
@@ -846,7 +930,41 @@
     </div>
 
     <script>
-        // Day picker toggle
+        // ── CONTROL DE MODO OSCURO / CLARO ──
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('aliceweb-theme', theme);
+
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Modo Claro';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Modo Oscuro';
+            }
+        }
+
+        // Leer preferencia guardada o del sistema
+        const savedTheme = localStorage.getItem('aliceweb-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else if (prefersDark) {
+            setTheme('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        // ── SELECCIÓN DE DÍAS ──
         const selectedDays = new Set();
         document.querySelectorAll('.day-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -861,7 +979,7 @@
             });
         });
 
-        // Category logic
+        // ── LÓGICA DE CATEGORÍAS ──
         const categorySelect = document.getElementById('category');
         const studyTypeSelect = document.getElementById('studyType');
 
@@ -895,7 +1013,7 @@
             if (e.target.value === 'Un Dia') document.getElementById('sub-curso-un-dia').classList.add('active');
         });
 
-        // Toggle de ubicación según modalidad (Virtual o Presencial)
+        // ── MODALIDAD VIRTUAL / PRESENCIAL ──
         const eventModalidadSelect = document.getElementById('eventModalidad');
         eventModalidadSelect.addEventListener('change', e => {
             const locationGroup = document.getElementById('eventLocationGroup');
@@ -910,17 +1028,14 @@
             }
         });
 
-        // ── FORM SUBMIT con nombres exactos para n8n ──
+        // ── FORM SUBMIT HACIA VERCEL SERVERLESS (/api/schedule) ──
         document.getElementById('dynamicForm').addEventListener('submit', async e => {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
             btn.disabled = true;
-            btn.textContent = 'Enviando...';
+            btn.textContent = 'Agendando en Calendar...';
 
-            const N8N_WEBHOOK_URL = typeof CONFIG !== 'undefined' ? CONFIG.ALICE_WEB_WEBHOOK : undefined;
             const category = categorySelect.value;
-
-            // CAPTURA DEL VALOR DEL RECORDATORIO SELECCIONADO POR EL USUARIO
             const reminderMinutes = parseInt(document.getElementById('reminderTime').value, 10);
             const modality = document.getElementById('eventModalidad').value;
 
@@ -934,7 +1049,6 @@
 
             if (category === 'Estudios') {
                 payload.studyType = studyTypeSelect.value;
-
                 if (payload.studyType === 'Libre') {
                     payload['¿Qué dia inicia?'] = document.getElementById('studyStart').value;
                     payload['¿Qué día finaliza?'] = document.getElementById('studyEnd').value;
@@ -947,20 +1061,17 @@
                     payload['Hora de inicio'] = document.getElementById('singleCourseTime').value || '08:00';
                     payload['Hora de finalización'] = document.getElementById('singleCourseTime').value || '09:00';
                 }
-
             } else if (category === 'Trabajo') {
                 payload['¿Qué dia inicia?'] = document.getElementById('jobStart').value;
                 payload['¿Qué día finaliza?'] = document.getElementById('jobDeadline').value;
                 payload['Hora de inicio'] = document.getElementById('jobEnd').value || '08:00';
                 payload['Hora de finalización'] = document.getElementById('jobEndTime').value || '16:00';
                 payload.priority = document.getElementById('jobPriority').value;
-
             } else if (category === 'Evento') {
                 payload['¿Qué dia inicia?'] = document.getElementById('eventDate').value;
                 payload['¿Qué día finaliza?'] = document.getElementById('eventDate').value;
                 payload['Hora de inicio'] = document.getElementById('eventTime').value || '08:00';
                 payload['Hora de finalización'] = document.getElementById('eventTimeEnd').value || '09:00';
-
             } else if (category === 'Salud') {
                 payload['¿Qué dia inicia?'] = document.getElementById('healthDate').value;
                 payload['¿Qué día finaliza?'] = document.getElementById('healthDate').value;
@@ -979,18 +1090,18 @@
                     document.getElementById('successOverlay').classList.add('show');
                 } else {
                     const errorData = await response.json().catch(() => ({}));
-                    alert('Error al procesar: ' + (errorData.details || errorData.error || 'Verifica la consola'));
+                    alert('Error al agendar: ' + (errorData.details || errorData.error || 'Revisa los logs'));
                     btn.disabled = false;
-                    btn.textContent = 'Guardar y enviar alerta';
+                    btn.textContent = 'Guardar y agendar actividad';
                 }
             } catch (err) {
-                alert('No se pudo conectar con el servidor.');
+                alert('No se pudo conectar con el endpoint serverless.');
                 btn.disabled = false;
-                btn.textContent = 'Guardar y enviar alerta';
+                btn.textContent = 'Guardar y agendar actividad';
             }
         });
 
-        // Reset
+        // ── RESET ──
         document.getElementById('btnReset').addEventListener('click', () => {
             document.getElementById('successOverlay').classList.remove('show');
             document.getElementById('dynamicForm').reset();
@@ -1000,7 +1111,7 @@
             document.getElementById('eventLocationGroup').style.display = 'none';
             document.getElementById('eventLocation').required = false;
             document.getElementById('btnSubmit').disabled = false;
-            document.getElementById('btnSubmit').textContent = 'Guardar y enviar alerta';
+            document.getElementById('btnSubmit').textContent = 'Guardar y agendar actividad';
         });
     </script>
 
