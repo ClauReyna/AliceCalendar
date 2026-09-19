@@ -58,9 +58,12 @@ export default async function handler(req, res) {
     if (payload.priority) {
       description += `Prioridad: ${payload.priority}\n`;
     }
-    if (payload.phone) {
-      description += `Teléfono de contacto: ${payload.phone}\n`;
-    }
+
+// NUEVO: agrega el link de Google Maps si es presencial
+if (modality === 'Presencial' && location) {
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+  description += `📍 Ubicación en Maps: ${mapsUrl}\n`;
+}
 
     // 4. Armar el objeto del evento
     const event = {
